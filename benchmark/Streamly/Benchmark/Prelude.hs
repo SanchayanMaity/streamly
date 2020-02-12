@@ -30,6 +30,7 @@ import Control.Monad.State.Strict (StateT, get, put)
 import Data.Functor.Identity (Identity, runIdentity)
 import Data.IORef (newIORef, modifyIORef')
 import GHC.Generics (Generic)
+import GHC.Types (SPEC(..))
 import Prelude
        (Monad, Int, (+), ($), (.), return, fmap, even, (>), (<=), (==), (>=),
         subtract, undefined, Maybe(..), odd, Bool, not, (>>=), mapM_, curry,
@@ -463,6 +464,7 @@ takeByTime :: NanoSecond64 -> Int -> Stream IO Int -> IO ()
 takeByTime i n = composeN n (Internal.takeByTime i)
 
 #ifdef INSPECTION
+-- inspect $ hasNoType 'takeByTime ''SPEC
 inspect $ hasNoTypeClasses 'takeByTime
 -- inspect $ 'takeByTime `hasNoType` ''D.Step
 #endif
@@ -639,6 +641,7 @@ append4 count n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'append2
+inspect $ 'append2 `hasNoType` ''SPEC
 inspect $ 'append2 `hasNoType` ''D.AppendState
 #endif
 
@@ -660,6 +663,7 @@ interleave2 value n = S.drain $ Internal.interleave
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'interleave2
+inspect $ 'interleave2 `hasNoType` ''SPEC
 inspect $ 'interleave2 `hasNoType` ''D.InterleaveState
 #endif
 
@@ -671,6 +675,7 @@ roundRobin2 value n = S.drain $ Internal.roundrobin
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'roundRobin2
+inspect $ 'roundRobin2 `hasNoType` ''SPEC
 inspect $ 'roundRobin2 `hasNoType` ''D.InterleaveState
 #endif
 
@@ -687,6 +692,7 @@ mergeBy count n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'mergeBy
+inspect $ 'mergeBy `hasNoType` ''SPEC
 inspect $ 'mergeBy `hasNoType` ''D.Step
 #endif
 
@@ -703,6 +709,7 @@ zip count n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'zip
+inspect $ 'zip `hasNoType` ''SPEC
 inspect $ 'zip `hasNoType` ''D.Step
 #endif
 
@@ -715,6 +722,7 @@ zipM count n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'zipM
+inspect $ 'zipM `hasNoType` ''SPEC
 inspect $ 'zipM `hasNoType` ''D.Step
 #endif
 
@@ -780,6 +788,7 @@ eqBy value n = eqBy' (source value n)
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'eqBy
+inspect $ 'eqBy `hasNoType` ''SPEC
 inspect $ 'eqBy `hasNoType` ''D.Step
 #endif
 
@@ -790,6 +799,7 @@ eqByPure value n = eqBy' (sourceUnfoldr value n)
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'eqByPure
+inspect $ 'eqByPure `hasNoType` ''SPEC
 inspect $ 'eqByPure `hasNoType` ''D.Step
 #endif
 
@@ -803,6 +813,7 @@ cmpBy value n = cmpBy' (source value n)
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'cmpBy
+inspect $ 'cmpBy `hasNoType` ''SPEC
 inspect $ 'cmpBy `hasNoType` ''D.Step
 #endif
 
@@ -812,6 +823,7 @@ cmpByPure value n = cmpBy' (sourceUnfoldr value n)
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'cmpByPure
+inspect $ 'cmpByPure `hasNoType` ''SPEC
 inspect $ 'cmpByPure `hasNoType` ''D.Step
 #endif
 
@@ -853,6 +865,7 @@ concatMap outer inner n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatMap
+inspect $ 'concatMap `hasNoType` ''SPEC
 #endif
 
 -- concatMap unfoldr/unfoldr
@@ -866,6 +879,7 @@ concatMapPure outer inner n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatMapPure
+inspect $ 'concatMapPure `hasNoType` ''SPEC
 #endif
 
 -- concatMap replicate/unfoldrM
@@ -877,6 +891,7 @@ concatMapRepl4xN value n = S.drain $ S.concatMap (S.replicate 4)
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatMapRepl4xN
+inspect $ 'concatMapRepl4xN `hasNoType` ''SPEC
 #endif
 
 -- concatMapWith
@@ -899,6 +914,7 @@ concatMapWithSerial = concatStreamsWith S.serial
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatMapWithSerial
+inspect $ 'concatMapWithSerial `hasNoType` ''SPEC
 #endif
 
 {-# INLINE concatMapWithAppend #-}
@@ -907,6 +923,7 @@ concatMapWithAppend = concatStreamsWith Internal.append
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatMapWithAppend
+inspect $ 'concatMapWithAppend `hasNoType` ''SPEC
 #endif
 
 {-# INLINE concatMapWithWSerial #-}
@@ -915,6 +932,7 @@ concatMapWithWSerial = concatStreamsWith S.wSerial
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatMapWithWSerial
+inspect $ 'concatMapWithSerial `hasNoType` ''SPEC
 #endif
 
 -- concatUnfold
@@ -931,6 +949,7 @@ concatUnfoldRepl4xN value n =
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatUnfoldRepl4xN
 inspect $ 'concatUnfoldRepl4xN `hasNoType` ''D.ConcatMapUState
+inspect $ 'concatUnfoldRepl4xN `hasNoType` ''SPEC
 #endif
 
 {-# INLINE concatUnfoldInterleaveRepl4xN #-}
@@ -942,6 +961,7 @@ concatUnfoldInterleaveRepl4xN value n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatUnfoldInterleaveRepl4xN
+-- inspect $ 'concatUnfoldInterleaveRepl4xN `hasNoType` ''SPEC
 -- inspect $ 'concatUnfoldInterleaveRepl4xN `hasNoType` ''D.ConcatUnfoldInterleaveState
 #endif
 
@@ -954,6 +974,7 @@ concatUnfoldRoundrobinRepl4xN value n =
 
 #ifdef INSPECTION
 inspect $ hasNoTypeClasses 'concatUnfoldRoundrobinRepl4xN
+-- inspect $ 'concatUnfoldRoundrobinRepl4xN `hasNoType` ''SPEC
 -- inspect $ 'concatUnfoldRoundrobinRepl4xN `hasNoType` ''D.ConcatUnfoldInterleaveState
 #endif
 
